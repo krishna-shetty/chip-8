@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <array>
+#include "fontset.h"
 
 class Memory
 {
