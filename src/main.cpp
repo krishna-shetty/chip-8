@@ -10,8 +10,8 @@ struct Chip8
     Display display;
 
     Chip8(int displayScale = 10, 
-        uint32_t pixelOffColor = 0xF0F6F0FF, 
-        uint32_t pixelOnColor = 0x222323FF)
+        uint32_t pixelOffColor = 0x222323FF, 
+        uint32_t pixelOnColor = 0xF0F6F0FF)
         : display(displayScale, pixelOffColor, pixelOnColor)
     {}
 
@@ -23,7 +23,7 @@ struct Chip8
 };
 
 int main() {
-    Chip8 chip8 = Chip8(0xC6BAACFF, 0x1E1C32FF);
+    Chip8 chip8 = Chip8(0x1e1c32ffu, 0xc6baacffu);
     chip8.display.clearBuffers();
     chip8.display.draw();
 
