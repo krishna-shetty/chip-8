@@ -1,6 +1,7 @@
 #include <iostream>
 #include "chip8_memory.h"
 #include "chip8_display.h"
+#include "chip8_stack.h"
 
 using namespace chip8;
 
@@ -8,6 +9,7 @@ struct Chip8
 {
     Memory memory;
     Display display;
+    Stack stack;
 
     Chip8(int displayScale = 10, 
         uint32_t pixelOffColor = 0x222323FF, 
