@@ -1,5 +1,5 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef CHIP8_MEMORY_H
+#define CHIP8_MEMORY_H
 
 #include <stdint.h>
 #include <array>
@@ -18,4 +18,4 @@ namespace chip8
     };
 } // namespace chip8
 
-#endif // MEMORY_H
+#endif // CHIP8_MEMORY_H

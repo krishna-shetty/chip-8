@@ -1,5 +1,5 @@
-#ifndef FONTSET_H
-#define FONTSET_H
+#ifndef CHIP8_FONTSET_H
+#define CHIP8_FONTSET_H
 
 #include <stdint.h>
 #include <array>
@@ -23,4 +23,4 @@ inline constexpr std::array<uint8_t, 80> FONTSET =
     0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 }; 
-#endif // FONTSET_H
+#endif // CHIP8_FONTSET_H
