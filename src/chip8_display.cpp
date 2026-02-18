@@ -17,13 +17,8 @@ Display::~Display()
     destroyWindow();
 }
 
-void Display::createWindow()
+bool Display::createWindow()
 {
-    if (!SDL_Init(SDL_INIT_VIDEO))
-    {
-        throw std::runtime_error(SDL_GetError());
-    }
-
     if (!SDL_CreateWindowAndRenderer(
             "Chip-8",
             WIDTH * _scale,
@@ -32,8 +27,11 @@ void Display::createWindow()
             &_window,
             &_renderer))
     {
-        throw std::runtime_error(SDL_GetError());
+        SDL_Log("SDL_CreateWindowAndRenderer failed: %s", SDL_GetError());
+        return false;
     }
+    
+    return true;
 }
 
 void Display::createTexture()
