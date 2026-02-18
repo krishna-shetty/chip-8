@@ -19,7 +19,14 @@ struct Chip8
     {}
 };
 
-int main() {
+int main() 
+{
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+    {
+        SDL_Log("SDL_Init failed: %s", SDL_GetError());
+        return 1;
+    }
+    
     Chip8 chip8(0x1e1c32ffu, 0xc6baacffu);
     chip8.display.clearBuffers();
     chip8.display.draw();

@@ -41,7 +41,7 @@ namespace chip8
             uint32_t _pixelOffColor = 0xF0F6F0FF;
             uint32_t _pixelOnColor = 0x222323FF;
 
-            void createWindow();
+            bool createWindow();
             void destroyWindow();
 
             void createTexture();
