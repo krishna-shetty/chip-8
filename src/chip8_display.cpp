@@ -2,7 +2,7 @@
 
 using namespace chip8;
 
-Display::Display(int scale, uint32_t pixelOffColor, uint32_t pixelOnColor)
+Display::Display(uint32_t pixelOffColor, uint32_t pixelOnColor, int scale)
     : _scale(scale), 
     _pixelOffColor(pixelOffColor), 
     _pixelOnColor(pixelOnColor)

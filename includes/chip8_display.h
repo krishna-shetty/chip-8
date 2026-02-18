@@ -17,7 +17,7 @@ namespace chip8
             void clearScreen();
             void setPixel(int x, int y, bool value);
             
-            Display(int scale = 10, uint32_t pixelOffColor = 0xF0F6F0FF, uint32_t pixelOnColor = 0x101010FF);
+            Display(uint32_t pixelOffColor = 0xF0F6F0FF, uint32_t pixelOnColor = 0x101010FF, int scale = 10);
             ~Display();
 
             Display(const Display&) = delete;
