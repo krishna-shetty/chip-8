@@ -4,14 +4,16 @@
 #include <array>
 #include <cstdint>
 
-class Stack
+namespace chip8
 {
-    public:
-        void push(uint16_t value);
-        uint16_t pop();
-    private:
-        std::array<uint16_t, 16> _stack{0};
-        uint8_t _sp = 0;
-};
-
+    class Stack
+    {
+        public:
+            void push(uint16_t value);
+            uint16_t pop();
+        private:
+            std::array<uint16_t, 16> _stack{0};
+            uint8_t _sp = 0;
+    };
+} // namespace chip8
 #endif // CHIP_8_STACK_H
