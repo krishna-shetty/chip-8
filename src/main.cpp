@@ -1,24 +1,42 @@
 #include <iostream>
+#include <chrono> 
+
 #include "chip8_memory.h"
 #include "chip8_display.h"
 #include "chip8_stack.h"
-#include <chip8_beeper.h>
+#include "chip8_beeper.h"
+#include "chip8_timer.h"
 
 using namespace chip8;
 
-struct Chip8
+class Chip8
 {
-    Memory memory;
-    Display display;
-    Stack stack;
+    public:
+        Memory memory;
+        
+        Display display;
+        
+        Stack stack;
+        
+        Beeper beeper;
+        
+        Timer delayTimer;
+        Timer soundTimer;
 
-    Chip8(
+        bool running = true;
+
+        Chip8(
         uint32_t pixelOffColor = 0x222323FF, 
         uint32_t pixelOnColor = 0xF0F6F0FF,
         int displayScale = 10)
         : display(pixelOffColor, pixelOnColor, displayScale)
-    {}
+        {}
 };
+
+void handleInput(Chip8&);
+void updateTimers(Chip8&, float);
+void updateAudio(Chip8&);
+void render(Chip8&);
 
 int main() 
 {
@@ -28,38 +46,78 @@ int main()
         return 1;
     }
     
-    Chip8 chip8(0x1e1c32ffu, 0xc6baacffu);
-    chip8.display.clearBuffers();
-    chip8.display.draw();
-
-    uint16_t address = 0x050; 
-
-    uint8_t value = chip8.memory.read(address);
-    std::cout << "Value at address 0x" << std::hex << address << ": 0x" << std::hex << static_cast<int>(value) << std::endl;
-
-    bool running = true;
-
     {
-        Beeper beeper = Beeper();
-        beeper.play();
+        Chip8 chip8(0x1e1c32ffu, 0xc6baacffu);
 
-        while (running)
-        {
-            SDL_Event e;
+        chip8.soundTimer.set(120);
 
-            while (SDL_PollEvent(&e))
-            {
-                if (e.type == SDL_EVENT_QUIT)
-                {
-                    running = false;
-                }
-            }
+        auto prev = std::chrono::steady_clock::now();
+        auto now = std::chrono::steady_clock::now();
 
-            beeper.update();
+        float dt = std::chrono::duration<float>(now - prev).count();
+        
+        while (chip8.running)
+        { 
+            now = std::chrono::steady_clock::now();
+            dt = std::chrono::duration<float>(now - prev).count();
+            prev = now;
+
+            handleInput(chip8);
+            updateTimers(chip8, dt);
+            updateAudio(chip8);
+            render(chip8);
+
             SDL_Delay(1);
         }
     }
 
     SDL_Quit();
     return 0;
+}
+
+void updateTimers(Chip8& chip8, float dt)
+{
+    static float accumulator = 0.0f;
+    const float timerInterval = 1.0f / Display::FRAMERATE;
+
+    accumulator += dt;
+
+    while (accumulator >= timerInterval)
+    {
+        chip8.delayTimer.decrement();
+        chip8.soundTimer.decrement();
+        accumulator -= timerInterval;
+    }
+}
+
+void updateAudio(Chip8& chip8)
+{
+    static bool wasBeeping = false;
+
+    bool isBeeping = chip8.soundTimer.get() > 0;
+
+    if (isBeeping && !wasBeeping)
+        chip8.beeper.play();
+    else if (!isBeeping && wasBeeping)
+        chip8.beeper.stop();
+
+    wasBeeping = isBeeping;
+
+    chip8.beeper.update(); 
+}
+
+
+void handleInput(Chip8& chip8)
+{
+    SDL_Event e;
+    while (SDL_PollEvent(&e))
+    {
+        if (e.type == SDL_EVENT_QUIT)
+            chip8.running = false;
+    }
+}
+
+void render(Chip8& chip8)
+{
+    chip8.display.draw();
 }
