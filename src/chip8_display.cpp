@@ -1,4 +1,5 @@
 #include <chip8_display.h>
+#include <stdexcept>
 
 using namespace chip8;
 
@@ -11,13 +12,13 @@ Display::Display(uint32_t pixelOffColor, uint32_t pixelOnColor, int scale)
     createTexture();
 }
 
-Display::~Display()
+Display::~Display() noexcept
 {
     destroyTexture();
     destroyWindow();
 }
 
-bool Display::createWindow()
+void Display::createWindow()
 {
     if (!SDL_CreateWindowAndRenderer(
             "Chip-8",
@@ -27,11 +28,8 @@ bool Display::createWindow()
             &_window,
             &_renderer))
     {
-        SDL_Log("SDL_CreateWindowAndRenderer failed: %s", SDL_GetError());
-        return false;
+        throw std::runtime_error(SDL_GetError());
     }
-    
-    return true;
 }
 
 void Display::createTexture()

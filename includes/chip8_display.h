@@ -18,7 +18,7 @@ namespace chip8
             void setPixel(int x, int y, bool value);
             
             Display(uint32_t pixelOffColor = 0xF0F6F0FF, uint32_t pixelOnColor = 0x101010FF, int scale = 10);
-            ~Display();
+            ~Display() noexcept;
 
             Display(const Display&) = delete;
             Display& operator=(const Display&) = delete;
@@ -41,7 +41,7 @@ namespace chip8
             uint32_t _pixelOffColor = 0xF0F6F0FF;
             uint32_t _pixelOnColor = 0x222323FF;
 
-            bool createWindow();
+            void createWindow();
             void destroyWindow();
 
             void createTexture();
