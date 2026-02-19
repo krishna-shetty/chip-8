@@ -2,6 +2,7 @@
 #include "chip8_memory.h"
 #include "chip8_display.h"
 #include "chip8_stack.h"
+#include <chip8_beeper.h>
 
 using namespace chip8;
 
@@ -38,16 +39,24 @@ int main()
 
     bool running = true;
 
-    while (running)
     {
-        SDL_Event e;
+        Beeper beeper = Beeper();
+        beeper.play();
 
-        while (SDL_PollEvent(&e))
+        while (running)
         {
-            if (e.type == SDL_EVENT_QUIT)
+            SDL_Event e;
+
+            while (SDL_PollEvent(&e))
             {
-                running = false;
+                if (e.type == SDL_EVENT_QUIT)
+                {
+                    running = false;
+                }
             }
+
+            beeper.update();
+            SDL_Delay(1);
         }
     }
 
