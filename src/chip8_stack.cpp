@@ -1,5 +1,7 @@
 #include "chip8_stack.h"
 
+using namespace chip8;
+
 void Stack::push(uint16_t value)
 {
     if (_sp < _stack.size())
