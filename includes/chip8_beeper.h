@@ -8,64 +8,70 @@ namespace chip8
 {
     class Oscillator
     {
-        private:
-            float currentStep;
-            float stepSize;
-            float volume;
-        public:
-            Oscillator() : currentStep(0.0f), volume(1.0f), stepSize(0.0f) {}
-            Oscillator(float rate, float volume = 1.0f)
-                : volume(volume), currentStep(0.0f)
-                {
-                    stepSize = (2 * M_PI) / rate;
-                }
+    private:
+        float currentStep;
+        float stepSize;
+        float volume;
 
-            float nextSample()
-            {
-                currentStep += stepSize;
+    public:
+        Oscillator()
+            : currentStep(0.0f),
+              stepSize(0.0f),
+              volume(1.0f)
+        {
+        }
 
-                return volume * SDL_sinf(currentStep);
-            }
+        Oscillator(float rate, float volume = 1.0f)
+            : currentStep(0.0f),
+              stepSize((2.0f * SDL_PI_F) / rate),
+              volume(volume)
+        {
+        }
 
-            void configure(float samplesPerCycle, float volume = 1.0f)
-            {
-                this->volume = volume;
-                stepSize = (2 * M_PI) / samplesPerCycle;
-            }
+        float nextSample()
+        {
+            currentStep += stepSize;
+
+            return volume * SDL_sinf(currentStep);
+        }
+
+        void configure(float samplesPerCycle, float volume = 1.0f)
+        {
+            this->volume = volume;
+            stepSize = (2 * M_PI) / samplesPerCycle;
+        }
     };
 
     class Beeper
     {
-        public:
-            static constexpr int SAMPLE_RATE = 44100;
-            static constexpr int BUFFER_SIZE = 4096;
+    public:
+        static constexpr int SAMPLE_RATE = 44100;
+        static constexpr int BUFFER_SIZE = 4096;
 
-            bool initalize();
-            void play();
-            void stop();
-            void update();
-            void shutdown();
-            
-            Beeper(float frequency = 440.0f, float volume = 0.5f);
-            ~Beeper() noexcept;
+        bool initalize();
+        void play();
+        void stop();
+        void update();
+        void shutdown();
 
-            Beeper(const Beeper&) = delete;
-            Beeper& operator=(const Beeper&) = delete;
-            Beeper(Beeper&&) = delete;
-            Beeper& operator=(Beeper&&) = delete;
+        Beeper(float frequency = 440.0f, float volume = 0.5f);
+        ~Beeper() noexcept;
 
-        private:
-            std::atomic<bool> _isPlaying {false};
-            Oscillator _oscillator;
-            SDL_AudioSpec _configuredSpec{};
-            SDL_AudioStream* _stream = nullptr;
+        Beeper(const Beeper &) = delete;
+        Beeper &operator=(const Beeper &) = delete;
+        Beeper(Beeper &&) = delete;
+        Beeper &operator=(Beeper &&) = delete;
 
-            float _frequency = 440.0f; // Default frequency (A4)
-            float _volume = 0.5f; // Default volume
+    private:
+        std::atomic<bool> _isPlaying{false};
+        Oscillator _oscillator;
+        SDL_AudioSpec _configuredSpec{};
+        SDL_AudioStream *_stream = nullptr;
 
-            bool isPlaying() const;
-    };  
+        float _frequency = 440.0f; // Default frequency (A4)
+        float _volume = 0.5f;      // Default volume
+
+        bool isPlaying() const;
+    };
 } // namespace chip8
 #endif // CHIP8_BEEPER_H
-
-
