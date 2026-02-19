@@ -21,7 +21,7 @@ struct Chip8
 
 int main() 
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+    if (!(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)))
     {
         SDL_Log("SDL_Init failed: %s", SDL_GetError());
         return 1;
