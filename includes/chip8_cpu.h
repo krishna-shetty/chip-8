@@ -15,7 +15,8 @@ class CPU
     public:
         static constexpr uint8_t REGISTER_COUNT = 16;
 
-        CPU(chip8::Memory& memory,
+        CPU(float clockSpeed,
+            chip8::Memory& memory,
             chip8::Display& display,
             chip8::Keypad& keypad,
             chip8::Timer& soundTimer,
@@ -24,7 +25,8 @@ class CPU
               _display(display),
               _keypad(keypad),
               _soundTimer(soundTimer),
-              _delayTimer(delayTimer)
+              _delayTimer(delayTimer),
+              _clockSpeed(clockSpeed)
         {}
 
         void cycle();
@@ -40,6 +42,7 @@ class CPU
 
         std::array<uint8_t, REGISTER_COUNT> _registers;
 
+        float _clockSpeed = 1000000;
         uint16_t fetch();
         void decodeExecute(uint16_t);
 };
