@@ -31,6 +31,9 @@ class CPU
 
         void cycle();
 
+        uint16_t getI() const { return _I;}
+        void setI(uint16_t value) { _I = value; }
+
     private:
         chip8::Memory& _memory;
         chip8::Display& _display;
@@ -39,6 +42,7 @@ class CPU
         chip8::Timer& _delayTimer;
 
         uint16_t _pc;
+        uint16_t _I;
 
         std::array<uint8_t, REGISTER_COUNT> _registers;
 
