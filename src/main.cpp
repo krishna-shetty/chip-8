@@ -6,6 +6,7 @@
 #include "chip8_stack.h"
 #include "chip8_beeper.h"
 #include "chip8_timer.h"
+#include "chip8_keypad.h"
 
 using namespace chip8;
 
@@ -22,6 +23,8 @@ class Chip8
         
         Timer delayTimer;
         Timer soundTimer;
+
+        Keypad keypad;
 
         bool running = true;
 
@@ -75,6 +78,18 @@ int main()
     return 0;
 }
 
+void handleInput(Chip8& chip8)
+{
+    SDL_Event e;
+    while (SDL_PollEvent(&e))
+    {
+        if (e.type == SDL_EVENT_QUIT)
+            chip8.running = false;
+
+        chip8.keypad.handleEvent(e);
+    }
+}
+
 void updateTimers(Chip8& chip8, float dt)
 {
     static float accumulator = 0.0f;
@@ -104,17 +119,6 @@ void updateAudio(Chip8& chip8)
     wasBeeping = isBeeping;
 
     chip8.beeper.update(); 
-}
-
-
-void handleInput(Chip8& chip8)
-{
-    SDL_Event e;
-    while (SDL_PollEvent(&e))
-    {
-        if (e.type == SDL_EVENT_QUIT)
-            chip8.running = false;
-    }
 }
 
 void render(Chip8& chip8)
