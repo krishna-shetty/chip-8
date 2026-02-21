@@ -46,6 +46,8 @@ void Display::createTexture()
         WIDTH,
         HEIGHT);
 
+    SDL_SetTextureScaleMode(_texture, SDL_SCALEMODE_PIXELART);
+
     if (_texture == nullptr)
     {
         destroyWindow();
@@ -131,7 +133,6 @@ void Display::draw()
     {
         std::memcpy(dst + i * pitchBytes, src + i * rowBytes, rowBytes);
     }
-    
 
     SDL_UnlockTexture(_texture);
 
