@@ -84,6 +84,16 @@ void Display::setPixel(int x, int y, bool value)
     }
 }
 
+bool Display::getPixel(int x, int y)
+{
+    if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
+    {
+        return _pixels[y][x];
+    }
+
+    return false;
+}
+
 void Display::clearBuffers()
 {
     for (auto &row: _pixels)
