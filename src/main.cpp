@@ -7,6 +7,7 @@
 #include "chip8_beeper.h"
 #include "chip8_timer.h"
 #include "chip8_keypad.h"
+#include "chip8_cpu.h"
 
 using namespace chip8;
 
@@ -26,20 +27,30 @@ class Chip8
 
         Keypad keypad;
 
+        CPU cpu;
+
         bool running = true;
 
-        Chip8(
-        uint32_t pixelOffColor = 0x222323FF, 
-        uint32_t pixelOnColor = 0xF0F6F0FF,
-        int displayScale = 10)
-        : display(pixelOffColor, pixelOnColor, displayScale)
-        {}
+        Chip8(uint32_t pixelOffColor = 0x222323FF,
+          uint32_t pixelOnColor = 0xF0F6F0FF,
+          int displayScale = 10,
+          float cpuClockHz = 500.0f)   
+        : memory(),
+          display(pixelOffColor, pixelOnColor, displayScale),
+          stack(),
+          delayTimer(),
+          soundTimer(),
+          keypad(),
+          cpu(cpuClockHz, memory, display, stack, keypad, soundTimer, delayTimer)  
+    {
+    }
 };
 
 void handleInput(Chip8&);
 void updateTimers(Chip8&, float);
 void updateAudio(Chip8&);
 void render(Chip8&);
+void tick(Chip8&, float);
 
 int main() 
 {
@@ -50,14 +61,14 @@ int main()
     }
     
     {
-        Chip8 chip8(0x1e1c32ffu, 0xc6baacffu);
-
-        chip8.soundTimer.set(120);
+        Chip8 chip8(0x1e1c32ffu, 0xc6baacffu, 10);
 
         auto prev = std::chrono::steady_clock::now();
         auto now = std::chrono::steady_clock::now();
 
         float dt = std::chrono::duration<float>(now - prev).count();
+        
+        chip8.memory.loadROM("assets/ibm.ch8");
         
         while (chip8.running)
         { 
@@ -66,6 +77,7 @@ int main()
             prev = now;
 
             handleInput(chip8);
+            tick(chip8, dt); 
             updateTimers(chip8, dt);
             updateAudio(chip8);
             render(chip8);
@@ -124,4 +136,18 @@ void updateAudio(Chip8& chip8)
 void render(Chip8& chip8)
 {
     chip8.display.draw();
+}
+
+void tick(Chip8& chip8, float dt)
+{
+    static float accumulator = 0.0f;
+    const float cycleTime = 1.0f / chip8.cpu.getClockSpeed();
+
+    accumulator += dt;
+
+    if(accumulator >= cycleTime)
+    {
+        chip8.cpu.cycle();
+        accumulator -= cycleTime;
+    }
 }
