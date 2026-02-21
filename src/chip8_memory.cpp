@@ -44,7 +44,7 @@ std::uint8_t Memory::read(std::uint16_t address) const
  * Date: Feb 20, 2026
  * Source: https://austinmorlan.com/posts/chip8_emulator/
  */
-void Memory::loadROM(uint16_t startAddress = 0x200, char const* filename)
+void Memory::loadROM(char const* filename, uint16_t startAddress = 0x200)
 {
     std::ifstream rom(filename, std::ios::binary | std::ios::ate);
 
