@@ -13,7 +13,7 @@ namespace chip8
             Memory();
             uint8_t read(std::uint16_t address) const;
             void write(std::uint16_t address, uint8_t value);
-            void loadROM(uint16_t address = 0x200, char const *filename);
+            void loadROM(char const *filename, uint16_t address = 0x200);
         private:
             std::array<uint8_t, 0x1000> _data = {0}; 
     };
