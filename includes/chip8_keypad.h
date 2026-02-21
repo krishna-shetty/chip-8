@@ -22,7 +22,7 @@ namespace chip8
             if (k == NO_KEY)
                 return;
 
-            _keys[(size_t)k] = (e.type == SDL_EVENT_KEY_DOWN) ? 1 : 0;
+            _keys[(size_t)k] = (e.type == SDL_EVENT_KEY_DOWN);
 
             if (e.type == SDL_EVENT_KEY_DOWN)
             {
@@ -42,6 +42,19 @@ namespace chip8
             outKey = (uint8_t)_lastPressed;
             _hasLastPressed = false;
             return true;
+        }
+
+        bool isAnyKeyDown()
+        {
+            for (uint8_t i = 0; i < KEY_COUNT; ++i)
+            {
+                if(isDown(i))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         void clear()
