@@ -6,11 +6,9 @@ using namespace chip8;
 
 Memory::Memory()
 {
-    uint16_t fontset_start_address = 0x050;
-
     for (size_t i = 0; i < FONTSET.size(); ++i)
     {
-        _data[fontset_start_address + i] = FONTSET[i];
+        _data[FONTSET_START_ADDRESS + i] = FONTSET[i];
     }
 }
 

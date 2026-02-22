@@ -10,6 +10,7 @@ namespace chip8
     class Memory
     {
         public:
+            const static uint16_t FONTSET_START_ADDRESS = 0x050
             Memory();
             uint8_t read(std::uint16_t address) const;
             void write(std::uint16_t address, uint8_t value);
