@@ -7,7 +7,9 @@
 #include "chip8_timer.h"
 #include "chip8_keypad.h"
 
+#include <random>
 #include <array>
+#include <chrono>
 
 
 class CPU
@@ -21,15 +23,24 @@ class CPU
             chip8::Stack& stack,
             chip8::Keypad& keypad,
             chip8::Timer& soundTimer,
-            chip8::Timer& delayTimer)
+            chip8::Timer& delayTimer,
+            bool useVyForShift = false,
+            bool jumpUsesVx = true,
+            bool legacyFx55Fx65Behavior = false)
             : _memory(memory),
               _display(display),
               _stack(stack),
               _keypad(keypad),
               _soundTimer(soundTimer),
               _delayTimer(delayTimer),
-              _clockSpeed(clockSpeed)
-        {}
+              _clockSpeed(clockSpeed),
+              _useVyForShift(useVyForShift),
+              _jumpUsesVx(jumpUsesVx),
+              _legacyFx55Fx65Behavior(legacyFx55Fx65Behavior),
+              _randGen(std::chrono::system_clock::now().time_since_epoch().count())
+        {
+            _randByte = std::uniform_int_distribution<uint8_t>(0, 255U);
+        }
 
         void cycle();     
         float getClockSpeed() const;   
@@ -48,12 +59,23 @@ class CPU
         std::array<uint8_t, REGISTER_COUNT> _registers;
 
         float _clockSpeed = 1000000;
+
+        bool _useVyForShift;
+        bool _jumpUsesVx = true;
+        bool _legacyFx55Fx65Behavior = false;
+
+        std::default_random_engine _randGen;
+        std::uniform_int_distribution<uint8_t> _randByte;
+
+        
         uint16_t fetch();
         void decodeExecute(uint16_t);
 
         uint16_t getI() const;
         void setI(uint16_t value);
+        uint16_t getPC() const;
         void advancePC();
+        void retractPC();
         void skipNext();
         void jump(uint16_t address);
         void setRegister(uint8_t reg, uint8_t value);

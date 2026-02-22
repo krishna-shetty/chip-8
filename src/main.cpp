@@ -68,7 +68,7 @@ int main()
 
         float dt = std::chrono::duration<float>(now - prev).count();
         
-        chip8.memory.loadROM("assets/ibm.ch8");
+        chip8.memory.loadROM("assets/7-beep.ch8");
         
         while (chip8.running)
         { 
@@ -76,7 +76,6 @@ int main()
             dt = std::chrono::duration<float>(now - prev).count();
             prev = now;
 
-            handleInput(chip8);
             tick(chip8, dt); 
             updateTimers(chip8, dt);
             updateAudio(chip8);
@@ -145,8 +144,9 @@ void tick(Chip8& chip8, float dt)
 
     accumulator += dt;
 
-    if(accumulator >= cycleTime)
+    while (accumulator >= cycleTime)
     {
+        handleInput(chip8);
         chip8.cpu.cycle();
         accumulator -= cycleTime;
     }
